@@ -1,22 +1,8 @@
 {
   "name": "skyzee-js-encoder",
-  "version": "3.0.0",
-  "description": "JavaScript Encoder dengan Obfuscator, Anti Debug, dan Tampilan Hacker 3D",
+  "version": "1.0.0",
   "type": "module",
-  "scripts": {
-    "dev": "vercel dev",
-    "start": "node api/encode.js"
-  },
   "dependencies": {
     "javascript-obfuscator": "^4.0.0"
-  },
-  "keywords": [
-    "encoder",
-    "javascript",
-    "obfuscator",
-    "anti-debug",
-    "skyzee"
-  ],
-  "author": "Skyzee",
-  "license": "MIT"
+  }
 }
