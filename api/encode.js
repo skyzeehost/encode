@@ -11,19 +11,15 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Encode jadi Base64 + URI dua kali
     const json = JSON.stringify(code);
     const uri = encodeURIComponent(json);
     const b64 = Buffer.from(uri).toString("base64");
     const final = Buffer.from(b64).toString("base64");
 
-    // Payload dengan Anti-Inspect dan Eval tersembunyi
     const payload = `
       (function(){
         const x = s => decodeURIComponent(atob(atob(s)));
         const y = 'eva' + 'l';
-
-        // Anti Inspect & Debugger
         (function anti(){
           function trap(){
             const _ = () => {};
@@ -38,13 +34,10 @@ export default async function handler(req, res) {
           }
           try { trap(); } catch(e){}
         })();
-
-        // Jalankan code
         window[y](x("${final}"));
       })();
     `;
 
-    // Obfuscate berat, tapi tanpa domain lock
     const obfuscated = obfuscate(payload, {
       compact: true,
       controlFlowFlattening: true,
