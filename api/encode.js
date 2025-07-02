@@ -1,62 +1,49 @@
-import { obfuscate } from "javascript-obfuscator";
+import { obfuscate } from 'javascript-obfuscator';
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Only POST allowed" });
-  }
-
-  const { code } = req.body;
-  if (!code) {
-    return res.status(400).json({ error: "Code is required" });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const json = JSON.stringify(code);
-    const uri = encodeURIComponent(json);
-    const b64 = Buffer.from(uri).toString("base64");
-    const final = Buffer.from(b64).toString("base64");
+    const { code } = req.body;
+
+    if (!code || typeof code !== 'string') {
+      return res.status(400).json({ error: 'Invalid input: code must be string' });
+    }
+
+    const encode1 = encodeURIComponent(JSON.stringify(code));
+    const b64a = Buffer.from(encode1).toString("base64");
+    const b64b = Buffer.from(b64a).toString("base64");
 
     const payload = `
       (function(){
         const x = s => decodeURIComponent(atob(atob(s)));
-        const y = 'eva' + 'l';
+        const run = 'eva' + 'l';
         (function anti(){
-          function trap(){
-            const _ = () => {};
-            ['log','warn','error','info','debug'].forEach(f => console[f] = _);
-            Object.defineProperty(console, '_commandLineAPI', {
-              get() { throw 'Inspect is disabled'; }
-            });
-            setInterval(function(){
-              debugger;
-              for(let i=0;i<1e6;i++){}
-            }, 1000);
-          }
-          try { trap(); } catch(e){}
+          ['log','warn','error','info','debug'].forEach(f => console[f] = () => {});
+          Object.defineProperty(console, '_commandLineAPI', {
+            get: () => { throw 'Inspect blocked'; }
+          });
+          setInterval(() => { debugger; }, 1000);
         })();
-        window[y](x("${final}"));
+        window[run](x("${b64b}"));
       })();
     `;
 
-    const obfuscated = obfuscate(payload, {
+    const result = obfuscate(payload, {
       compact: true,
       controlFlowFlattening: true,
-      controlFlowFlatteningThreshold: 1,
       deadCodeInjection: true,
-      deadCodeInjectionThreshold: 0.5,
       selfDefending: true,
-      disableConsoleOutput: true,
       stringArray: true,
-      stringArrayEncoding: ["base64", "rc4"],
-      stringArrayThreshold: 1,
-      rotateStringArray: true,
-      splitStrings: true,
-      splitStringsChunkLength: 3
+      stringArrayEncoding: ['base64'],
+      stringArrayThreshold: 1
     });
 
-    res.status(200).json({ encoded: obfuscated.getObfuscatedCode() });
+    return res.status(200).json({ encoded: result.getObfuscatedCode() });
 
-  } catch (e) {
-    res.status(500).json({ error: "Encode error", detail: e.message });
+  } catch (err) {
+    return res.status(500).json({ error: 'Internal Error', message: err.message });
   }
 }
