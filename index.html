@@ -1,98 +1,69 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <title>Skyzee JS Encoder</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>Skyzee Encoder</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
     body {
-      font-family: 'Share Tech Mono', monospace;
       background: #000;
       color: #00ff99;
+      font-family: monospace;
       text-align: center;
       padding: 2rem;
-    }
-    h1 {
-      text-shadow: 0 0 10px #00ff99;
-      font-size: 2.5rem;
-      animation: glow 2s ease-in-out infinite alternate;
-    }
-    @keyframes glow {
-      from { text-shadow: 0 0 10px #00ff99; }
-      to   { text-shadow: 0 0 20px #00cc66, 0 0 30px #00ff99; }
     }
     textarea, pre {
       width: 90%;
       max-width: 800px;
       background: #111;
+      border: 1px solid #00ff99;
       color: #00ff99;
-      border: 2px solid #00ff99;
       padding: 1rem;
-      margin: 1rem auto;
-      resize: vertical;
-      box-shadow: 0 0 10px #00ff99;
+      margin-top: 1rem;
     }
     button {
-      background: linear-gradient(45deg, #00ff99, #00cc66);
-      color: #000;
-      border: none;
       padding: 1rem 2rem;
-      font-size: 1.2rem;
+      margin-top: 1rem;
+      background: #00ff99;
+      color: #000;
+      font-weight: bold;
+      border: none;
       cursor: pointer;
-      box-shadow: 0 0 10px #00ff99;
-    }
-    button:hover {
-      background: linear-gradient(45deg, #00cc66, #00ff99);
-    }
-    .loading {
-      margin-top: 10px;
-      font-size: 0.9rem;
-      color: yellow;
     }
   </style>
 </head>
 <body>
   <h1>Skyzee JS Encoder</h1>
-
-  <textarea id="inputCode" rows="10" placeholder="// Masukkan JavaScript kamu di sini..."></textarea>
-  <br>
-  <button onclick="encode()">🔐 ENCODE SEKARANG</button>
-  <div class="loading" id="loading" style="display:none;">⏳ Sedang encode...</div>
-
-  <h2>Hasil Encode:</h2>
-  <pre id="outputCode">// hasil akan muncul di sini</pre>
+  <textarea id="code" rows="10" placeholder="Tulis kode JS kamu di sini..."></textarea><br>
+  <button onclick="encode()">Encode</button>
+  <pre id="result">// hasil muncul di sini</pre>
 
   <script>
     async function encode() {
-      const input = document.getElementById("inputCode").value;
-      const output = document.getElementById("outputCode");
-      const loading = document.getElementById("loading");
+      const code = document.getElementById("code").value;
+      const result = document.getElementById("result");
 
-      if (!input.trim()) {
-        output.textContent = "❌ Masukkan kode JS dulu";
-        return;
-      }
+      if (!code.trim()) return result.textContent = "❌ Masukkan kode dulu.";
 
-      loading.style.display = "block";
-      output.textContent = "";
+      result.textContent = "⏳ Meng-encode...";
 
       try {
         const res = await fetch("/api/encode", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code: input })
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ code })
         });
+
         const data = await res.json();
         if (data.encoded) {
-          output.textContent = data.encoded;
+          result.textContent = data.encoded;
         } else {
-          output.textContent = "❌ Gagal encode: " + (data.error || "Unknown error");
+          result.textContent = "❌ Gagal encode: " + (data.error || "Unknown error");
         }
-      } catch (err) {
-        output.textContent = "❌ ERROR FETCH: " + err.message;
-      } finally {
-        loading.style.display = "none";
+      } catch (e) {
+        result.textContent = "❌ Fetch error: " + e.message;
       }
     }
   </script>
