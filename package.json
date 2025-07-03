@@ -1,8 +1,0 @@
-{
-  "name": "skyzee-encoder",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "javascript-obfuscator": "^4.0.0"
-  }
-}
