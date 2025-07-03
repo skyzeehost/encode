@@ -1,71 +1,681 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Skyzee Encoder</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tools  -  SkyzeeDev</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet" />
   <style>
-    body {
-      background: #000;
-      color: #00ff99;
-      font-family: monospace;
-      text-align: center;
-      padding: 2rem;
+    /* Root styling and reset */
+    :root {
+      --bg: #ffffff;
+      --text-muted: #6b7280;
+      --text-heading: #111827;
+      --card-bg: #f9fafb;
+      --shadow-light: 0 4px 12px rgba(0,0,0,0.05);
+      --border-radius: 0.5rem;
+      --max-width: 720px;
+      --accent-color: #111827;
+      --accent-hover: #374151;
+      --font-sans: 'Poppins', sans-serif;
+      --transition: 0.3s ease;
+      --btn-bg: #111827;
+      --btn-color: #ffffff;
+      --btn-hover-bg: #374151;
+
+      --input-bg: #fff;
+      --input-border: #d1d5db;
+      --input-focus-border: #111827;
     }
-    textarea, pre {
-      width: 90%;
-      max-width: 800px;
-      background: #111;
-      border: 1px solid #00ff99;
-      color: #00ff99;
-      padding: 1rem;
-      margin-top: 1rem;
+
+    *, *::before, *::after {
+      box-sizing: border-box;
     }
-    button {
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text-muted);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      box-shadow: var(--shadow-light);
       padding: 1rem 2rem;
-      margin-top: 1rem;
-      background: #00ff99;
-      color: #000;
-      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-weight: 600;
+      font-size: 1.25rem;
+      color: var(--text-heading);
+      user-select: none;
+    }
+
+    nav {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      user-select: none;
+    }
+
+    nav a {
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0.3rem 0.6rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: background-color var(--transition), color var(--transition);
+    }
+
+    nav a[aria-current="page"] {
+      font-weight: 700;
+      color: var(--accent-color);
+      border-bottom: 2px solid var(--accent-color);
+      cursor: default;
+      padding-bottom: 0.25rem;
+    }
+
+    nav a:hover:not([aria-current="page"]),
+    nav a:focus:not([aria-current="page"]) {
+      background-color: #f3f4f6;
+      outline: none;
+    }
+
+    main {
+      flex-grow: 1;
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 1rem auto 1.5rem;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      overflow-y: auto;
+      user-select: text;
+      font-size: 14px;
+    }
+
+    section {
+      width: 100%;
+    }
+
+    /* Show/hide sections */
+    section[hidden] {
+      display: none !important;
+    }
+
+    /* Home */
+    #section-home h1 {
+      font-weight: 600;
+      font-size: 1.75rem;
+      color: var(--text-heading);
+      text-align: center;
+      margin-bottom: 0.5rem;
+      user-select: none;
+    }
+
+    #section-home p.lead {
+      font-weight: 400;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+
+    #section-home .card-container {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #section-home .card {
+      background: var(--card-bg);
+      box-shadow: var(--shadow-light);
+      border-radius: var(--border-radius);
+      padding: 1rem 1.25rem;
+      width: 280px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      transition: box-shadow var(--transition);
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    #section-home .card:hover, #section-home .card:focus-within {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      outline: none;
+    }
+
+    #section-home .card h2 {
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-heading);
+      margin: 0;
+      user-select: text;
+    }
+
+    #section-home .card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      flex-grow: 1;
+      user-select: text;
+    }
+
+    #section-home .button-primary {
+      margin-top: auto;
+      background-color: var(--btn-bg);
+      color: var(--btn-color);
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: var(--border-radius);
       border: none;
       cursor: pointer;
+      transition: background-color var(--transition), transform var(--transition);
+      user-select: none;
+      width: 100%;
+      text-align: center;
+    }
+    #section-home .button-primary:hover,
+    #section-home .button-primary:focus {
+      background-color: var(--btn-hover-bg);
+      outline: none;
+      transform: scale(1.05);
+    }
+
+    /* Encode/Decode */
+    #section-encode-decode h1.page-title {
+      font-weight: 600;
+      font-size: 1.75rem;
+      color: var(--text-heading);
+      margin-bottom: 1rem;
+      text-align: center;
+      user-select: none;
+    }
+
+    #section-encode-decode .tab-buttons {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+
+    #section-encode-decode .tab-buttons button {
+      font-weight: 600;
+      font-size: 0.95rem;
+      background-color: #e5e7eb;
+      color: var(--text-heading);
+      border-radius: var(--border-radius);
+      border: none;
+      padding: 0.5rem 1.25rem;
+      cursor: pointer;
+      transition: background-color var(--transition), color var(--transition), transform var(--transition);
+      flex-shrink: 0;
+    }
+
+    #section-encode-decode .tab-buttons button.active,
+    #section-encode-decode .tab-buttons button:focus {
+      background-color: var(--btn-bg);
+      color: var(--btn-color);
+      outline: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transform: scale(1.05);
+    }
+
+    #section-encode-decode label {
+      font-weight: 600;
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--text-heading);
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    #section-encode-decode textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 0.65rem 0.9rem;
+      border: 1.8px solid var(--input-border);
+      border-radius: var(--border-radius);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      resize: vertical;
+      transition: border-color var(--transition);
+      background-color: var(--input-bg);
+      color: var(--text-heading);
+      line-height: 1.4;
+      user-select: text;
+      font-weight: 400;
+    }
+
+    #section-encode-decode textarea:focus {
+      border-color: var(--input-focus-border);
+      outline: none;
+    }
+
+    #section-encode-decode .btn-row {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    #section-encode-decode .btn-row button {
+      background-color: var(--btn-bg);
+      color: var(--btn-color);
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color var(--transition), transform var(--transition);
+      user-select: none;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    #section-encode-decode .btn-row button:hover,
+    #section-encode-decode .btn-row button:focus {
+      background-color: var(--btn-hover-bg);
+      outline: none;
+      transform: scale(1.05);
+    }
+
+    /* Website Script Extractor */
+    #section-devace-tool h1.page-title {
+      font-weight: 600;
+      font-size: 1.75rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-heading);
+      text-align: center;
+      user-select: none;
+    }
+    #section-devace-tool p.page-desc {
+      font-weight: 400;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      max-width: 640px;
+      margin: 0 auto 1.5rem auto;
+      text-align: center;
+    }
+    #extractorForm {
+      max-width: 640px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      user-select: text;
+    }
+    #extractorForm label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-heading);
+      margin-bottom: 0.3rem;
+      user-select: none;
+    }
+    #extractorForm input[type="url"] {
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      padding: 0.65rem 1rem;
+      border-radius: var(--border-radius);
+      border: 1.8px solid var(--input-border);
+      outline-offset: 2px;
+      transition: border-color var(--transition);
+    }
+    #extractorForm input[type="url"]:focus {
+      border-color: var(--input-focus-border);
+      outline: none;
+    }
+    #extractorForm button {
+      max-width: 140px;
+      align-self: center;
+      padding: 0.65rem 1.75rem;
+      font-size: 1rem;
+      font-weight: 700;
+      border-radius: var(--border-radius);
+      border: none;
+      background-color: var(--btn-bg);
+      color: var(--btn-color);
+      cursor: pointer;
+      transition: background-color var(--transition), transform var(--transition);
+      user-select: none;
+      white-space: nowrap;
+    }
+    #extractorForm button:hover,
+    #extractorForm button:focus {
+      background-color: var(--btn-hover-bg);
+      outline: none;
+      transform: scale(1.05);
+    }
+    #extractorResults {
+      max-width: 720px;
+      height: calc(100vh - 310px);
+      margin: 1rem auto 0 auto;
+      padding: 1rem 1.25rem;
+      border-radius: var(--border-radius);
+      font-family: monospace;
+      font-size: 12px;
+      background: var(--card-bg);
+      border: 1.5px solid var(--input-border);
+      color: var(--text-heading);
+      overflow-y: auto;
+      white-space: pre-wrap;
+      user-select: text;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+      cursor: text;
+    }
+
+    footer {
+      flex-shrink: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      padding: 1rem 1rem;
+      color: var(--text-muted);
+      border-top: 1px solid #e5e7eb;
+      user-select: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      main {
+        margin: 1rem 1rem 1.5rem 1rem;
+        padding: 0;
+        font-size: 13px;
+      }
+
+      #section-home h1,
+      #section-encode-decode h1.page-title,
+      #section-devace-tool h1.page-title {
+        font-size: 1.3rem;
+      }
+
+      #section-home .card-container {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      #section-home .card,
+      #extractorResults {
+        width: 100%;
+        max-width: none;
+      }
+
+      #extractorResults {
+        height: 220px;
+        font-size: 11px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>Skyzee JS Encoder</h1>
-  <textarea id="code" rows="10" placeholder="Tulis kode JS kamu di sini..."></textarea><br>
-  <button onclick="encode()">Encode</button>
-  <pre id="result">// hasil muncul di sini</pre>
+  <header role="banner" aria-label="Site header with navigation">
+    <nav role="navigation" aria-label="Primary navigation">
+      <a href="#" tabindex="0" aria-current="page" id="link-home">Home</a>
+      <a href="#" tabindex="0" id="link-encode-decode">Enc/Unenc</a>
+      <a href="#" tabindex="0" id="link-devace-tool">Devace</a>
+    </nav>
+  </header>
+
+  <main role="main" tabindex="0">
+    <!-- Home / Menu Section -->
+    <section id="section-home" tabindex="-1" aria-label="Home menu">
+      <h1>Tools  -  SkyzeeDev</h1>
+      <p class="lead">Select a menu option below to start encoding/decoding text or extracting website scripts.</p>
+      <div class="card-container" role="list">
+        <article class="card" role="listitem" tabindex="0" aria-label="Encode / Decode tool card">
+          <h2>Tools Enc/Unenc</h2>
+          <p>Base64 and URL encode/decode with fast, reliable results.</p>
+          <button class="button-primary" id="btnGoEncodeDecode" aria-label="Go to Encode and Decode Tool">Open Tool</button>
+        </article>
+
+        <article class="card" role="listitem" tabindex="0" aria-label="Website Script Extractor tool card">
+          <h2>Tools Devace</h2>
+          <p>Fetch and view HTML, CSS, JS, and JSON source files from websites.</p>
+          <button class="button-primary" id="btnGoDevaceTool" aria-label="Go to Website Script Extractor">Open Tool</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- Encode/Decode Tool Section -->
+    <section id="section-encode-decode" tabindex="-1" aria-label="Encode and decode tool interface" hidden>
+      <h1 class="page-title">Encode &amp; Decode Your Text</h1>
+      <div class="tab-buttons" role="tablist" aria-label="Choose encode or decode method">
+        <button id="tab-base64" role="tab" aria-selected="true" tabindex="0" aria-controls="panel-base64">Base64</button>
+        <button id="tab-url" role="tab" aria-selected="false" tabindex="-1" aria-controls="panel-url">URL Encode / Decode</button>
+      </div>
+      <section id="panel-base64" role="tabpanel" tabindex="0" aria-labelledby="tab-base64">
+        <label for="inputBase64">Input Text</label>
+        <textarea id="inputBase64" placeholder="Type or paste your text here..."></textarea>
+        <div class="btn-row" role="group" aria-label="Base64 encode and decode buttons">
+          <button id="btnEncodeBase64" type="button" aria-label="Encode to Base64">Encode</button>
+          <button id="btnDecodeBase64" type="button" aria-label="Decode Base64">Decode</button>
+          <button id="btnClearBase64" type="button" aria-label="Clear Base64 fields">Clear</button>
+        </div>
+        <label for="outputBase64">Result</label>
+        <textarea id="outputBase64" readonly placeholder="Result appears here..."></textarea>
+      </section>
+      <section id="panel-url" role="tabpanel" tabindex="0" aria-labelledby="tab-url" hidden>
+        <label for="inputURL">Input Text</label>
+        <textarea id="inputURL" placeholder="Type or paste your text here..."></textarea>
+        <div class="btn-row" role="group" aria-label="URL encode and decode buttons">
+          <button id="btnEncodeURL" type="button" aria-label="URL encode text">Encode</button>
+          <button id="btnDecodeURL" type="button" aria-label="URL decode text">Decode</button>
+          <button id="btnClearURL" type="button" aria-label="Clear URL encode/decode fields">Clear</button>
+        </div>
+        <label for="outputURL">Result</label>
+        <textarea id="outputURL" readonly placeholder="Result appears here..."></textarea>
+      </section>
+    </section>
+
+    <!-- Website Script Extractor Section -->
+    <section id="section-devace-tool" tabindex="-1" aria-label="Website Script Extractor tool" hidden>
+      <h1 class="page-title">Website Script Extractor</h1>
+      <p class="page-desc">Paste a website URL below; this tool retrieves publicly accessible HTML, CSS, JS, and JSON files for viewing. PHP and server-only files cannot be extracted due to security.</p>
+      <form id="extractorForm" aria-label="Website URL input for script extraction" style="max-width: 640px; margin: 0 auto 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <label for="websiteURL" style="flex-basis: 100%; font-weight: 600;">Website URL</label>
+        <input type="url" id="websiteURL" name="websiteURL" placeholder="https://example.com" aria-required="true" required
+          style="flex-grow: 1; font-family: var(--font-sans); font-size: 1rem; padding: 0.6rem 1rem; border-radius: 0.5rem; border: 1.5px solid var(--input-border);" />
+        <button type="submit" class="button-primary" style="flex-shrink: 0; max-width: 140px;">Fetch</button>
+      </form>
+      <section id="extractorResults"
+        aria-live="polite"
+        aria-relevant="additions"
+        style="max-width: 700px; max-height: calc(100vh - 260px); margin: 0 auto; padding: 1rem 1.25rem; border-radius: 0.5rem; font-family: monospace; font-size: 12px; background: var(--card-bg); border: 1.5px solid var(--input-border); color: var(--text-heading); overflow-y: auto; white-space: pre-wrap; user-select: text; box-shadow: 0 3px 12px rgba(0,0,0,0.05); cursor: text;"></section>
+    </section>
+  </main>
+
+  <footer>
+    &copy; 2024 Devace — Clean and compact developer tools.
+  </footer>
 
   <script>
-    async function encode() {
-      const code = document.getElementById("code").value;
-      const result = document.getElementById("result");
+    (function(){
+      // Navigation elements and section mappings
+      const navLinks = {home: document.getElementById('link-home'), encodeDecode: document.getElementById('link-encode-decode'), devaceTool: document.getElementById('link-devace-tool')};
+      const sections = {home: document.getElementById('section-home'), encodeDecode: document.getElementById('section-encode-decode'), devaceTool: document.getElementById('section-devace-tool')};
 
-      if (!code.trim()) return result.textContent = "❌ Masukkan kode dulu.";
-
-      result.textContent = "⏳ Meng-encode...";
-
-      try {
-        const res = await fetch("/api/encode", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ code })
-        });
-
-        const data = await res.json();
-        if (data.encoded) {
-          result.textContent = data.encoded;
-        } else {
-          result.textContent = "❌ Gagal encode: " + (data.error || "Unknown error");
-        }
-      } catch (e) {
-        result.textContent = "❌ Fetch error: " + e.message;
+      function showSection(name){
+        Object.entries(sections).forEach(([k,el])=>el.hidden = k !== name);
+        Object.entries(navLinks).forEach(([k,link])=>link.setAttribute('aria-current', k===name ? 'page' : 'false'));
+        setTimeout(()=>{
+          const h = sections[name].querySelector('.page-title,h1');
+          h && h.focus && h.focus();
+        },100);
       }
-    }
+
+      navLinks.home.addEventListener('click',e=>{e.preventDefault();showSection('home');});
+      navLinks.encodeDecode.addEventListener('click',e=>{e.preventDefault();showSection('encodeDecode');});
+      navLinks.devaceTool.addEventListener('click',e=>{e.preventDefault();showSection('devaceTool');});
+      document.getElementById('btnGoEncodeDecode').addEventListener('click',()=>showSection('encodeDecode'));
+      document.getElementById('btnGoDevaceTool').addEventListener('click',()=>showSection('devaceTool'));
+
+      // Encode/Decode Tabs
+      const tabBase64 = document.getElementById('tab-base64'), tabURL = document.getElementById('tab-url'),
+        panelBase64 = document.getElementById('panel-base64'), panelURL = document.getElementById('panel-url');
+
+      function switchTab(name){
+        if(name==='base64'){
+          tabBase64.setAttribute('aria-selected','true'); tabBase64.tabIndex=0;
+          tabURL.setAttribute('aria-selected','false'); tabURL.tabIndex=-1;
+          panelBase64.hidden=false; panelURL.hidden=true; panelBase64.focus();
+        } else {
+          tabBase64.setAttribute('aria-selected','false'); tabBase64.tabIndex=-1;
+          tabURL.setAttribute('aria-selected','true'); tabURL.tabIndex=0;
+          panelBase64.hidden=true; panelURL.hidden=false; panelURL.focus();
+        }
+      }
+      tabBase64.addEventListener('click',()=>switchTab('base64'));
+      tabURL.addEventListener('click',()=>switchTab('url'));
+      function handleTabKeyDown(e){
+        if(e.key==='ArrowRight' || e.key==='ArrowLeft'){
+          e.preventDefault();
+          if(e.target.id==='tab-base64') { tabURL.focus(); switchTab('url'); }
+          else { tabBase64.focus(); switchTab('base64'); }
+        }
+      }
+      tabBase64.addEventListener('keydown',handleTabKeyDown);
+      tabURL.addEventListener('keydown',handleTabKeyDown);
+
+      // Base64 encode/decode
+      const inputBase64 = document.getElementById('inputBase64'), outputBase64 = document.getElementById('outputBase64');
+      document.getElementById('btnEncodeBase64').addEventListener('click',()=>{
+        try { outputBase64.value = btoa(unescape(encodeURIComponent(inputBase64.value))); }
+        catch { outputBase64.value = "Error: Invalid input for Base64 encoding."; }
+      });
+      document.getElementById('btnDecodeBase64').addEventListener('click',()=>{
+        try { outputBase64.value = decodeURIComponent(escape(atob(inputBase64.value))); }
+        catch { outputBase64.value = "Error: Invalid Base64 string."; }
+      });
+      document.getElementById('btnClearBase64').addEventListener('click',()=>{
+        inputBase64.value=''; outputBase64.value=''; inputBase64.focus();
+      });
+      // URL encode/decode
+      const inputURL = document.getElementById('inputURL'), outputURL = document.getElementById('outputURL');
+      document.getElementById('btnEncodeURL').addEventListener('click',()=>{
+        try { outputURL.value = encodeURIComponent(inputURL.value); } catch { outputURL.value = "Error: Invalid input."; }
+      });
+      document.getElementById('btnDecodeURL').addEventListener('click',()=>{
+        try { outputURL.value = decodeURIComponent(inputURL.value); } catch { outputURL.value = "Error: Invalid URL encoded string."; }
+      });
+      document.getElementById('btnClearURL').addEventListener('click',()=>{
+        inputURL.value=''; outputURL.value=''; inputURL.focus();
+      });
+
+      // Website Script Extractor
+      const form = document.getElementById("extractorForm"),
+        results = document.getElementById("extractorResults");
+
+      function escapeHtml(text){return text.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+      function getRelativePath(url){try{let u=new URL(url);let p=u.pathname;if(p.startsWith('/')) p=p.slice(1);return p||'index.html';}catch{return url;}}
+      async function fetchText(url,timeout=15000){
+        const controller=new AbortController(), id=setTimeout(()=>controller.abort(),timeout);
+        try{const r=await fetch(url,{signal:controller.signal,mode:'cors'}); clearTimeout(id); if(!r.ok) throw new Error(`HTTP ${r.status}: ${r.statusText}`); return await r.text();}
+        catch(e){clearTimeout(id); return {error:String(e)};}
+      }
+      function parseLinks(html, base){
+        let doc;
+        try{doc=new DOMParser().parseFromString(html,'text/html');}catch{return {error:'Failed to parse HTML.'};}
+        const css=[...doc.querySelectorAll('link[rel="stylesheet"]')].map(l=>l.href||l.getAttribute('href')).filter(Boolean).map(h=>new URL(h,base).href);
+        const js=[...doc.querySelectorAll('script[src]')].map(s=>s.src||s.getAttribute('src')).filter(Boolean).map(s=>new URL(s,base).href);
+        const json=[...doc.querySelectorAll('link[type="application/json"]')].map(l=>l.href||l.getAttribute('href')).filter(Boolean).map(h=>new URL(h,base).href);
+        return {cssLinks:[...new Set(css)], jsLinks:[...new Set(js)], jsonLinks:[...new Set(json)]};
+      }
+      function appendFile(filename, content, err=false){
+        const a=document.createElement("article");
+        a.style.background="#f9fafb";
+        a.style.borderRadius="0.5rem";
+        a.style.boxShadow="0 10px 25px rgba(0,0,0,0.07)";
+        a.style.padding="0.75rem";
+        a.style.marginBottom="1.25rem";
+        a.style.fontFamily="monospace";
+        a.style.whiteSpace="pre-wrap";
+        a.style.color=err?"firebrick":"#111827";
+        a.tabIndex=0;
+        const h=document.createElement("h3");
+        h.textContent=filename;
+        h.style.margin="0 0 0.5rem 0";
+        h.style.color="#111827";
+        h.style.userSelect="text";
+        a.appendChild(h);
+        const pre=document.createElement("pre");
+        pre.textContent=content;
+        a.appendChild(pre);
+        results.appendChild(a);
+        results.scrollTop=results.scrollHeight;
+      }
+      async function fetchAndAppend(urls,type){
+        for(const u of urls){
+          appendFile('Status',`Fetching ${type} file: ${u} ...`);
+          const content=await fetchText(u);
+          results.lastChild.remove();
+          if(content&&content.error) appendFile(getRelativePath(u),`Error fetching file:\n${content.error}`,true);
+          else appendFile(getRelativePath(u),content);
+          await new Promise(r=>setTimeout(r,120));
+        }
+      }
+      form.addEventListener("submit",async e=>{
+        e.preventDefault();
+        results.innerHTML="";
+        const val=form.websiteURL.value.trim();
+        if(!val){appendFile("Error","Please enter a valid URL.",true);return;}
+        let url;
+        try{url=new URL(val.startsWith('http')?val:'https://'+val);}catch{appendFile("Error","Invalid URL format.",true);return;}
+        appendFile("Status",`Fetching HTML from ${url.href} ...`);
+        const html=await fetchText(url.href);
+        results.innerHTML="";
+        if(typeof html==="object"&&html.error){appendFile("index.html",`Error fetching main page:\n${html.error}`,true);return;}
+        appendFile("index.html",html);
+        const {cssLinks,jsLinks,jsonLinks}=parseLinks(html,url.href);
+        if(cssLinks.length) await fetchAndAppend(cssLinks,"CSS");
+        if(jsLinks.length) await fetchAndAppend(jsLinks,"JS");
+        if(jsonLinks.length) await fetchAndAppend(jsonLinks,"JSON");
+        const note=document.createElement("p");
+        note.style.textAlign="center"; note.style.fontStyle="italic"; note.style.color="#6b7280";
+        note.textContent="⚠️ PHP and other server-side scripts cannot be fetched due to security and CORS restrictions.";
+        results.appendChild(note);
+      });
+
+      // Show home on load
+      showSection('home');
+      function showSection(name){
+        Object.entries(sections).forEach(([k,v])=>v.hidden=k!==name);
+        Object.entries(navLinks).forEach(([k,l])=>l.setAttribute('aria-current',k===name?'page':'false'));
+        setTimeout(()=>{
+          const h=sections[name].querySelector('.page-title,h1');
+          h?.focus?.();
+        },100);
+      }
+    })();
   </script>
 </body>
-</html>
+        </html>
